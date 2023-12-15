@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "rmtrend"
+version = "0.1.0"
+description = "The package is designed as an API client for users to interact with the Rick & Morty API and to retriece data regarding Rick & Morty from Reddit API."
+authors = ["Yuyang Zhang"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
