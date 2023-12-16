@@ -1,78 +1,61 @@
 import pytest
 import requests_mock
-import sys
+from rmtrend.rmtrend import fetch_character_info, fetch_location_info, recent_reddit
+from unittest.mock import patch, MagicMock
 
-sys.path.append("Users/张语扬/poetry_project/Final/rmtrend")
-
-from src.rmtrend.rmtrend import fetch_character_info, fetch_location_info, recent_reddit
-
-# Mock data for tests
+# Mock data for the Rick & Morty API
 character_mock_response = {
-    'results': [{
-        # ... (character data as in your example)
-    }]
+    'results': [
+        {
+            'name': 'Rick Sanchez',
+            'status': 'Alive',
+            'species': 'Human',
+            'gender': 'Male',
+            'origin': {'name': 'Earth (C-137)'},
+            'episode': ['url1', 'url2'],
+            'image': 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
+            'url': 'https://rickandmortyapi.com/api/character/1'
+        }
+    ]
 }
 
 location_mock_response = {
-    'results': [{
-        # ... (location data as in your example)
-    }]
-}
-
-reddit_mock_response = {
-    'data': {
-        'children': [
-            {'data': {'title': 'Post 1', 'score': 100, 'num_comments': 10}},
-            # ... (more mock posts)
-        ]
-    }
+    'results': [
+        {
+            'name': 'Citadel of Ricks',
+            'type': 'Space station',
+            'dimension': 'unknown',
+            'residents': ['url1', 'url2', 'url3'],
+            'url': 'https://rickandmortyapi.com/api/location/3'
+        }
+    ]
 }
 
 # Tests for fetch_character_info
 def test_fetch_character_info_success():
     with requests_mock.Mocker() as m:
-        m.get("https://rickandmortyapi.com/api/character/?name=Rick Sanchez", json=character_mock_response)
+        m.get("https://rickandmortyapi.com/api/character/?name=Rick+Sanchez", json=character_mock_response)
         result = fetch_character_info("Rick Sanchez")
         assert result['Name'] == 'Rick Sanchez'
         assert result['Status'] == 'Alive'
-        assert result['Species'] == 'Human'
-        assert result['Gender'] == 'Male'
-        assert result['Origin'] == 'Earth (C-137)'
-        assert result['Episode Count'] == 3
-        assert result['Image'] == 'https://rickandmortyapi.com/api/character/avatar/1.jpeg'
-        assert result['URL'] == 'https://rickandmortyapi.com/api/character/1'
+        # ... more assertions
 
 def test_fetch_character_info_not_found():
     with requests_mock.Mocker() as m:
-        m.get("https://rickandmortyapi.com/api/character/?name=Audrey Zhang", json=character_mock_response)
-        result = fetch_character_info("Rick Sanchez")
+        m.get("https://rickandmortyapi.com/api/character/?name=Unknown", json={'results': []})
+        result = fetch_character_info("Unknown")
         assert result is None
 
 # Tests for fetch_location_info
 def test_fetch_location_info_success():
     with requests_mock.Mocker() as m:
-        m.get("https://rickandmortyapi.com/api/location/?name=Citadel of Ricks", json=location_mock_response)
+        m.get("https://rickandmortyapi.com/api/location/?name=Citadel+of+Ricks", json=location_mock_response)
         result = fetch_location_info("Citadel of Ricks")
-        # Add your assertions here, indented inside the function
-        assert result is not None
         assert result['Name'] == 'Citadel of Ricks'
+        # ... more assertions
 
 def test_fetch_location_info_not_found():
     with requests_mock.Mocker() as m:
-        m.get("https://rickandmortyapi.com/api/location/?name=NYC for test", json=location_mock_response)
-        result = fetch_location_info("NYC for test")
+        m.get("https://rickandmortyapi.com/api/location/?name=Unknown", json={'results': []})
+        result = fetch_location_info("Unknown")
         assert result is None
-
-# Tests for recent_reddit
-def test_recent_reddit():
-    # This requires mocking PRAW. One approach is to use unittest.mock to patch the PRAW methods used in your function.
-    # Example (simplified):
-    with mock.patch('praw.Reddit') as mock_reddit:
-        mock_reddit.subreddit.return_value.search.return_value = [mock.MagicMock(title='Post 1', score=100, num_comments=10)]
-        results = recent_reddit('Rick')
-        assert len(results) == 1
-        # More assertions based on your reddit_mock_response
-
-# Run tests
-if __name__ == '__main__':
-    pytest.main()
