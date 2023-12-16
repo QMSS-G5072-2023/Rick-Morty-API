@@ -1,6 +1,6 @@
 # rmtrend
 
-The package is designed as an API client for users to interact with the Rick & Morty API and to retriece data regarding Rick & Morty from Reddit API.
+The package is designed as an API client for users to interact with the Rick & Morty API and to retrieve data regarding Rick & Morty from Reddit API.
 
 ## Installation
 
