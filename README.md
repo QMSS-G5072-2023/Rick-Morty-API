@@ -82,6 +82,8 @@ The package requires the following dependencies:
 python = "^3.9"
 praw = "^7.0"
 requests = "^2.31.0"
+pytest = "^7.4.3"
+requests-mock = "^1.11.0"
 
 ## Contributing
 
